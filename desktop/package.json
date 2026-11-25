@@ -1,0 +1,16 @@
+{
+  "name": "musicplayer-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tauri desktop client for a Musicplayer server",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build && node scripts/copy-release.js",
+    "icons": "tauri icon ../public/icons/icon-512.png"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2"
+  }
+}

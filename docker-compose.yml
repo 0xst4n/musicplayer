@@ -1,0 +1,42 @@
+# Start / update:  docker compose --profile home-https up -d --build
+# Settings come from .env (see .env.example).
+services:
+  musicplayer:
+    build: .
+    image: musicplayer
+    restart: unless-stopped
+    environment:
+      MUSICPLAYER_PASSWORD: ${MUSICPLAYER_PASSWORD:?Set MUSICPLAYER_PASSWORD in the .env file}
+      # Caddy is the only way in (port below is loopback-only), so its X-Forwarded-For is trusted.
+      MUSICPLAYER_TRUST_PROXY: "1"
+    volumes:
+      # Kept on the server's disk: survive restarts, updates and rebuilds.
+      - ./music:/music
+      - ./data:/data
+    ports:
+      # Only reachable from the VM itself; Caddy below handles HTTPS.
+      - "127.0.0.1:4321:4321"
+
+  # HTTPS via a DNS challenge at dynv6: no port forwarding, reachable at home / over the VPN.
+  caddy-home:
+    build: ./caddy
+    image: musicplayer-caddy-dns
+    profiles: ["home-https"]
+    restart: unless-stopped
+    depends_on: [musicplayer]
+    environment:
+      DOMAIN: ${DOMAIN:-}
+      DNS_PROVIDER: ${DNS_PROVIDER:-dynv6}
+      DNS_TOKEN: ${DNS_TOKEN:-}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile.home:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

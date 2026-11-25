@@ -1,0 +1,9 @@
+node_modules
+tools
+data
+music
+.claude
+.env
+config.json
+*.md
+test

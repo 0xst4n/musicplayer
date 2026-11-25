@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Musicplayer</title>
+  <link rel="stylesheet" href="setup.css">
+</head>
+<body>
+  <main>
+    <section id="connecting" hidden>
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Connecting to <span id="connecting-url"></span>…</p>
+    </section>
+
+    <form id="form" hidden>
+      <h1>Musicplayer</h1>
+      <p class="muted">Enter the address of your Musicplayer server.</p>
+      <input id="url" type="text" inputmode="url" autocomplete="url" spellcheck="false"
+             placeholder="https://music.example.com" required>
+      <p id="error" class="error" hidden></p>
+      <button type="submit">Connect</button>
+      <p class="hint">Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> in the app to change the server later.</p>
+    </form>
+  </main>
+  <script src="setup.js"></script>
+</body>
+</html>

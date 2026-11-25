@@ -1,0 +1,34 @@
+# Home HTTPS: real certificate via a DNS challenge (dynv6 or DuckDNS).
+# The server is only reachable on your home network / through your home VPN.
+{
+	# With an email set, Caddy uses Let's Encrypt and falls back to ZeroSSL.
+	# Needed for shared dynamic-DNS domains, where Let's Encrypt's weekly limit
+	# is often used up by other users of the same domain.
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	# Provider name is filled in when the config is read; the token only at runtime,
+	# so it is never written into Caddy's saved config. Resolvers: check the challenge
+	# record with public DNS, not the home router's (a local DNS record would hide it).
+	tls {
+		# 1st: Let's Encrypt
+		issuer acme {
+			dns {$DNS_PROVIDER} {env.DNS_TOKEN}
+			resolvers 1.1.1.1 8.8.8.8
+		}
+		# 2nd: ZeroSSL, used when Let's Encrypt fails or is rate limited
+		issuer acme {
+			dir https://acme.zerossl.com/v2/DV90
+			dns {$DNS_PROVIDER} {env.DNS_TOKEN}
+			resolvers 1.1.1.1 8.8.8.8
+		}
+	}
+	request_body {
+		max_size 1GB
+	}
+	reverse_proxy musicplayer:4321 {
+		# Live updates (Server-Sent Events) must not be buffered.
+		flush_interval -1
+	}
+}

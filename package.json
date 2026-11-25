@@ -1,0 +1,23 @@
+{
+  "name": "musicplayer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local music player with playlists and imports",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test \"test/*.test.js\"",
+    "test:network": "node -e \"process.env.MUSICPLAYER_NETWORK_TESTS='1'; require('child_process').execFileSync(process.execPath, ['--test', 'test/*.test.js'], { stdio: 'inherit', env: process.env })\"",
+    "setup": "python -m venv tools/venv && tools\\venv\\Scripts\\python -m pip install -U \"yt-dlp[default]\" spotdl",
+    "update-tools": "tools\\venv\\Scripts\\python -m pip install -U \"yt-dlp[default]\" spotdl",
+    "icons": "node scripts/make-icons.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "music-metadata": "^12.8.1"
+  },
+  "devDependencies": {
+    "@fontsource-variable/figtree": "^5.3.0"
+  }
+}
